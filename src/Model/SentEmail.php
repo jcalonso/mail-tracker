@@ -32,7 +32,7 @@ class SentEmail extends Model
     ];
 
     protected $casts = [
-        'meta' => 'collection',
+        'meta'=>'collection',
     ];
 
     public function getConnectionName()
@@ -72,22 +72,22 @@ class SentEmail extends Model
         if ($meta->has('smtpResponse')) {
             $response = $meta->get('smtpResponse');
             $delivered_at = $meta->get('delivered_at');
-            $responses[] = $response . ' - Delivered ' . $delivered_at;
+            $responses[] = $response.' - Delivered '.$delivered_at;
         }
         if ($meta->has('failures')) {
             foreach ($meta->get('failures') as $failure) {
                 if (!empty($failure['status'])) {
-                    $responses[] = $failure['status'] . ' (' . $failure['action'] . '): ' . $failure['diagnosticCode'] . ' (' . $failure['emailAddress'] . ')';
+                    $responses[] = $failure['status'].' ('.$failure['action'].'): '.$failure['diagnosticCode'].' ('.$failure['emailAddress'].')';
                 } else {
-                    $responses[] = 'Generic Failure (' . $failure['emailAddress'] . ')';
+                    $responses[] = 'Generic Failure ('.$failure['emailAddress'].')';
                 }
             }
         } elseif ($meta->has('complaint')) {
             $complaint_time = $meta->get('complaint_time');
             if ($meta->get('complaint_type')) {
-                $responses[] = 'Complaint: ' . $meta->get('complaint_type') . ' at ' . $complaint_time;
+                $responses[] = 'Complaint: '.$meta->get('complaint_type').' at '.$complaint_time;
             } else {
-                $responses[] = 'Complaint at ' . $complaint_time->format("n/d/y g:i a");
+                $responses[] = 'Complaint at '.$complaint_time->format("n/d/y g:i a");
             }
         }
         return implode(" | ", $responses);
@@ -100,10 +100,10 @@ class SentEmail extends Model
     {
         $headers = collect(preg_split("/\r\n|\n|\r/", $this->headers))
             ->transform(function ($header) {
-                list($key, $value) = explode(":", $header . ":");
+                list($key, $value) = explode(":", $header.":");
                 return collect([
-                    'key' => trim($key),
-                    'value' => trim($value)
+                    'key'=>trim($key),
+                    'value'=>trim($value)
                 ]);
             })->filter(function ($header) {
                 return $header->get('key');
@@ -112,10 +112,5 @@ class SentEmail extends Model
                 return $header->get('value');
             });
         return $headers->get($key);
-    }
-
-    public function urlClicks()
-    {
-        return $this->hasMany(SentEmailUrlClicked::class);
     }
 }
